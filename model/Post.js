@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { schema } = require("./User");
 
 const postSchema = new mongoose.Schema({
   title: {
@@ -11,7 +12,7 @@ const postSchema = new mongoose.Schema({
   content: {
     type: String,
     minLength: 3,
-    maxLength: 1000,
+    maxLength: 50,
     required: [true, "Please enter some content for your post"],
   },
 
@@ -28,27 +29,14 @@ const postSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: [true, "Post must have a user"],
+    required: [false, "Post must have a user"],
   },
 
-  replies: [
-    {
-      content: {
-        type: String,
-        minLength: 3,
-        maxLength: 150,
-      },
-      dateCreated: {
-        type: Date,
-        default: Date.now(),
-      },
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: [true, "Reply must have a user"],
-      },
-    },
-  ],
+  replies: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Reply",
+    autopopulate: true,
+  },
 });
-
+postSchema.plugin(require("mongoose-autopopulate"));
 module.exports = mongoose.model("Post", postSchema);

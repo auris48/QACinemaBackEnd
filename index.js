@@ -4,7 +4,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const { default: mongoose } = require('mongoose');
 const User = require('./model/User');
-
+const PostRouter = require('./router/PostRouter');
+const cors = require('cors');
 const app = express();
 
 // Configure sessions to be used (using in-memory store, not for production)
@@ -16,6 +17,7 @@ app.use(expressSession({
         maxAge: 1 * 60 * 1000 // 1 hour cookie
     }
 }));
+
 
 // Passport configuration (authentication)
 // - when logged in, the users id is stored in request.session.passport.user on each request
@@ -41,7 +43,14 @@ passport.use(new LocalStrategy(User.authenticate())); // User.authenticate() com
 
 app.use(express.static("public"));
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+/******************   app.use("/Posts", isAuthenticated, require("./router/PostRouter"));
+ * 
+ * 
+ * 
+ * */
+app.use("/Posts", PostRouter);
 
 // initialise passport and indicate it should use sessions for logins
 app.use(passport.initialize());
@@ -49,6 +58,7 @@ app.use(passport.session());
 
 app.get('/login', (request, response) => {
     response.sendFile(__dirname + '/public/login.html');
+    
 });
 
 app.get('/register', (request, response) => {
@@ -106,10 +116,11 @@ function isAuthenticated(request, response, next) {
     // return response.status(400).send('Not logged in.');
 }
 
+
+
 async function main() {
     try {
-        await mongoose.connect("mongodb://127.0.0.1/auth_example");
-
+        await mongoose.connect("mongodb://127.0.0.1/qa_cinema");
         app.listen(3000, () => console.log(`Server upon on port ${3000}`));
     } catch (error) {
         console.error(error);
