@@ -6,6 +6,7 @@ const { default: mongoose } = require('mongoose');
 const User = require('./model/User');
 const MovieRouter = require('./router/MovieRouter')
 const app = express();
+const cors = require("cors");
 
 // Configure sessions to be used (using in-memory store, not for production)
 app.use(expressSession({
@@ -41,6 +42,7 @@ passport.use(new LocalStrategy(User.authenticate())); // User.authenticate() com
 
 app.use(express.static("public"));
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", MovieRouter);
 

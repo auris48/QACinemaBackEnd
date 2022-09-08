@@ -61,6 +61,7 @@ const movieSchema = new Schema({
     dayShowing: {
         type: Date,
     }    
+
 });
 
 module.exports = mongoose.model("Movies", movieSchema);
