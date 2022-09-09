@@ -11,6 +11,11 @@ router.get('/login', (request, response) => {
     response.sendFile(path.join(__dirname + '/../' + 'public/login.html'));
 });
 
+router.get('/users', async (request, response) =>{
+    const user = await User.find();
+    response.send(user);
+})
+
 router.get('/register', (request, response) => {
     response.sendFile(path.join(__dirname + '/../' + 'public/register.html'));
 });
