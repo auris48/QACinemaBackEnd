@@ -50,12 +50,14 @@ router.put('/booking/:id', async (req, res) => {
     }
 });
 
-// deleteing bookings
+// deleting bookings
 router.delete('/booking/:id', async (req, res) => {
     try {
         const booking = await Booking.findById(req.params.id);
+
         // const payment = await Payment.findById(booking.paymentID);
         // await payment.deleteOne();
+
         await booking.deleteOne();
         res.status(201).send(booking);
     } catch {
