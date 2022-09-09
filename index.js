@@ -4,6 +4,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const { default: mongoose } = require('mongoose');
 const User = require('./model/User');
+const BookingRouter = require('./router/BookingRouter')
 const MovieRouter = require('./router/MovieRouter')
 const userRouter = require('./router/userRouter');
 const app = express();
@@ -45,6 +46,7 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use("/",BookingRouter); 
 app.use("/", MovieRouter);
 
 // initialise passport and indicate it should use sessions for logins
