@@ -4,10 +4,10 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const { default: mongoose } = require('mongoose');
 const User = require('./model/User');
+const MovieRouter = require('./router/MovieRouter')
 const userRouter = require('./router/userRouter');
-const cors = require('cors');
-
 const app = express();
+const cors = require("cors");
 
 // Configure sessions to be used (using in-memory store, not for production)
 app.use(expressSession({
@@ -43,7 +43,9 @@ passport.use(new LocalStrategy(User.authenticate())); // User.authenticate() com
 
 app.use(express.static("public"));
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
+app.use("/", MovieRouter);
 
 // initialise passport and indicate it should use sessions for logins
 app.use(passport.initialize());
@@ -54,7 +56,7 @@ app.use("/", userRouter);
 
 async function main() {
     try {
-        await mongoose.connect("mongodb://127.0.0.1/auth_example");
+        await mongoose.connect("mongodb://127.0.0.1/qa_cinema");
 
         app.listen(3000, () => console.log(`Server upon on port ${3000}`));
     } catch (error) {
