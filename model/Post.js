@@ -4,15 +4,15 @@ const { schema } = require("./User");
 const postSchema = new mongoose.Schema({
   title: {
     type: String,
-    minLength: 10,
+    minLength: 5,
     maxLength: 50,
     required: [true, "Please enter a title for your post"],
   },
 
   content: {
     type: String,
-    minLength: 3,
-    maxLength: 50,
+    minLength: 5,
+    maxLength: 150,
     required: [true, "Please enter some content for your post"],
   },
 
@@ -24,6 +24,7 @@ const postSchema = new mongoose.Schema({
   movie: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Movie",
+    required: [false, "Post must have a movie"],
   },
 
   user: {
@@ -38,5 +39,6 @@ const postSchema = new mongoose.Schema({
     autopopulate: true,
   },
 });
+
 postSchema.plugin(require("mongoose-autopopulate"));
 module.exports = mongoose.model("Post", postSchema);

@@ -25,7 +25,7 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const post = await Post.create(req.body);
-    res.send(post);
+    res.status(200).send(post);
   } catch (err) {
     res.status(500).send(err);
   }
@@ -41,7 +41,6 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-
 router.delete("/Delete_Reply/:id", async (req, res) => {
   try {
     const reply = await Reply.findByIdAndDelete({ _id: req.params.id });
@@ -50,6 +49,20 @@ router.delete("/Delete_Reply/:id", async (req, res) => {
     res.status(500).send(err);
   }
 });
+
+
+router.post("/Add_Reply/:id", async (req, res) => {
+  try {
+    const reply = await Reply.create(req.body);
+    const post = await Post.findById({ _id: req.params.id });
+    post.replies.push(reply);
+    await post.save();
+    res.status(200).send(reply);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
 
 router.post("/Reply_Reply/:id", async (req, res) => {
   try {
