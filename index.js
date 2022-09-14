@@ -47,8 +47,33 @@ passport.use(new LocalStrategy(User.authenticate())); // User.authenticate() com
 
 app.use(express.static("public"));
 app.use(express.json());
-app.use(cors());
+
+
+//the following was set to allow cookies to be sent to port 3001 despite it not being origin
+app.use(cors({
+    origin : 'http://localhost:3001' ,
+    credentials: true, // <= Accept credentials (cookies) sent by the client
+  }))
+  
+  app.use("/", userRouter);
+
+  app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept'
+    );
+    next();
+});
+
+
+
 app.use(express.urlencoded({ extended: true }));
+
+
+
+
 /******************   app.use("/Posts", isAuthenticated, require("./router/PostRouter"));
  * 
  * 

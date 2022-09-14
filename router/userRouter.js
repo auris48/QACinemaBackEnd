@@ -11,6 +11,13 @@ router.get('/login', (request, response) => {
     response.sendFile(path.join(__dirname + '/../' + 'public/login.html'));
 });
 
+<<<<<<< HEAD
+=======
+router.get('/users', async (request, response) =>{
+    const user = await User.find();
+    response.send(user);
+})
+>>>>>>> bc91251dc2c7f7854685ad9bca5c9f18ff62dd59
 
 router.get('/register', (request, response) => {
     response.sendFile(path.join(__dirname + '/../' + 'public/register.html'));
@@ -30,13 +37,14 @@ router.post('/register', async (request, response) => {
         const user = await User.register(new User({
             username: request.body.username,
             dateOfBirth: request.body.dateOfBirth,
-            email: request.body.email
+            email: request.body.email,
+            isAdmin: request.body.isAdmin
         }), request.body.password); // register(userWithUsername, password)
 
         if (user) {
             passport.authenticate("local");
             // await User.findOneAndUpdate({'username': 'rossmorr8'}, {$set: {'age':"test2"}});
-            return response.status(200).send();
+            return response.status(200).send(user);
         }
     } catch (error) {
         console.error(error);
