@@ -6,10 +6,10 @@ const Reply = require("../model/Reply");
 
 router.get("/", async (req, res) => {
   try {
-    const post = await Post.find();
+    const post = await Post.find().sort({ dateCreated: -1 });
     res.status(200).json(post);
   } catch (err) {
-    res.status(500).send(er);
+    res.status(500).send(err);
   }
 });
 
@@ -32,10 +32,13 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-  const post = await Post.updateOne({ _id: req.params.id }, req.body);
-
-  if (post) {
-    res.status(200).send(post);
+  console.log("reached");
+  console.log(req.body);
+  const postUpdated = await Post.updateOne({ _id: req.params.id }, req.body);
+  if (postUpdated) {
+    const updatedPost = await Post.findById({ _id: req.params.id });
+    console.log(updatedPost); 
+    res.status(200).send(updatedPost);
   } else {
     res.status(404).send("Post not found");
   }
@@ -50,12 +53,11 @@ router.delete("/Delete_Reply/:id", async (req, res) => {
   }
 });
 
-
-router.post("/Add_Reply/:id", async (req, res) => {
+router.post("/Add_Comment/:id", async (req, res) => {
   try {
     const reply = await Reply.create(req.body);
     const post = await Post.findById({ _id: req.params.id });
-    post.replies.push(reply);
+    post.comments.push(reply);
     await post.save();
     res.status(200).send(reply);
   } catch (err) {
@@ -63,26 +65,30 @@ router.post("/Add_Reply/:id", async (req, res) => {
   }
 });
 
-
-router.post("/Reply_Reply/:id", async (req, res) => {
+router.post("/Add_Comment_Reply/:id", async (req, res) => {
   try {
     const originalComment = await Reply.findById({ _id: req.params.id });
     const reply = await Reply.create(req.body);
     originalComment.replies.push(reply._id);
     const updatedOriginalComment = await originalComment.save();
-    res.status(200).send(updatedOriginalComment);
+    res.status(200).send(reply);
   } catch (err) {
     res.status(500).send(err);
   }
 });
 
 router.put("/Edit_Reply/:id", async (req, res) => {
+
+  console.log(req.body);
+
   try {
     const reply = await Reply.findOneAndUpdate(
       { _id: req.params.id },
       req.body
     );
-    const updatedReply = reply.save();
+    const updatedReply = await reply.save();
+
+    console.log(updatedReply);
     res.status(200).send(updatedReply);
   } catch (err) {
     res.status(500).send(err);
@@ -95,6 +101,26 @@ router.delete("/:id", async (req, res) => {
     res.status(200).send();
   } else {
     res.status(404).send("Post not found");
+  }
+});
+
+router.get("/num_pages/:page_size", async (req, res) => {
+  try {
+    const numPages = (await Post.countDocuments()) / req.params.page_size;
+    res.status(200).json(numPages);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+router.get("pages/", async (req, res) => {
+  try {
+    const posts = await Post.find()
+      .skip(req.params.page_num * req.params.limit)
+      .limit(req.params.limit);
+    res.status(200).json(posts);
+  } catch (err) {
+    res.status(500).send(err);
   }
 });
 
