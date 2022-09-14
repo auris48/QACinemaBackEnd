@@ -12,13 +12,13 @@ const postSchema = new mongoose.Schema({
   content: {
     type: String,
     minLength: 5,
-    maxLength: 150,
+    maxLength: 2000,
     required: [true, "Please enter some content for your post"],
   },
 
   dateCreated: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
 
   movie: {
@@ -33,7 +33,14 @@ const postSchema = new mongoose.Schema({
     required: [false, "Post must have a user"],
   },
 
-  replies: {
+  rating: {
+    type: Number,
+    min: 1,
+    max: 5,
+    required: [false, "Post must have a movie rating"],
+  },
+
+  comments: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Reply",
     autopopulate: true,

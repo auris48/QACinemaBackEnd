@@ -8,7 +8,7 @@ const replySchema = new mongoose.Schema({
   },
   dateCreated: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
