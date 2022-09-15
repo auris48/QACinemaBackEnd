@@ -45,6 +45,15 @@ router.get('/movie/byrelease/:released', async (request, response) => {
     }
 });
 
+router.get('/unreleasedMovie/', async (request, response) => {
+    try {
+        const movie = await Movie.find({ releaseDate: { $gte: Date.now() } })
+        response.send(movie);
+    } catch {
+        response.status(404);
+        response.send({ error: 'no movies' })
+    }
+});
 
 //Create a movie
 router.post('/movie', async (request, response) => {

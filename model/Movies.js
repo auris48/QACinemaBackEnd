@@ -19,6 +19,11 @@ const movieSchema = new Schema({
         required: false
     },
 
+    trailerURL: {
+        type: String,
+        required: false
+    },
+
     description: {
         type: String,
         required: false
