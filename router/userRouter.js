@@ -1,53 +1,70 @@
-const express = require('express');
-const User = require('../model/User');
-const expressSession = require('express-session');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
+const express = require("express");
+const User = require("../model/User");
+const expressSession = require("express-session");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
 const router = express.Router();
-path = require('path');
+path = require("path");
 
-
-router.get('/login', (request, response) => {
-    response.sendFile(path.join(__dirname + '/../' + 'public/login.html'));
+router.get("/login", (request, response) => {
+  response.sendFile(path.join(__dirname + "/../" + "public/login.html"));
 });
 
-router.get('/users', async (request, response) =>{
-    const user = await User.find();
+router.get("/users", async (request, response) => {
+  const user = await User.find();
+  response.send(user);
+});
+
+router.get("/register", (request, response) => {
+  response.sendFile(path.join(__dirname + "/../" + "public/register.html"));
+});
+
+router.get("/user/:id", async (request, response) => {
+  try {
+    const user = await User.findById(request.params.id);
     response.send(user);
-})
-
-router.get('/register', (request, response) => {
-    response.sendFile(path.join(__dirname + '/../' + 'public/register.html'));
+  } catch {
+    response.status(404);
+    response.send({ error: "user does not exist" });
+  }
 });
 
-router.post('/login', passport.authenticate('local', {
-    failureMessage: 'Invalid login credentials.',
-    failureRedirect: '/'
-}), (request, response) => {
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    failureMessage: "Invalid login credentials.",
+    failureRedirect: "/",
+  }),
+  async (request, response) => {
     // upon successful login, passport will automatically create an express session for us to use
-    response.status(200).send(request.user.username);
-});
+    const user = await User.findOne({ username: request.body.username });
+    response.status(200).send(user);
+  }
+);
 
-router.post('/register', async (request, response) => {
-    try {
-        // register the user
-        const user = await User.register(new User({
-            username: request.body.username,
-            dateOfBirth: request.body.dateOfBirth,
-            email: request.body.email,
-            isAdmin: request.body.isAdmin
-        }), request.body.password); // register(userWithUsername, password)
+router.post("/register", async (request, response) => {
+  try {
+    // register the user
+    const user = await User.register(
+      new User({
+        username: request.body.username,
+        dateOfBirth: request.body.dateOfBirth,
+        email: request.body.email,
+        isAdmin: request.body.isAdmin,
+      }),
+      request.body.password
+    ); // register(userWithUsername, password)
 
-        if (user) {
-            passport.authenticate("local");
-            // await User.findOneAndUpdate({'username': 'rossmorr8'}, {$set: {'age':"test2"}});
-            return response.status(200).send(user);
-        }
-    } catch (error) {
-        console.error(error);
+    if (user) {
+      passport.authenticate("local");
+      // await User.findOneAndUpdate({'username': 'rossmorr8'}, {$set: {'age':"test2"}});
+      return response.status(200).send(user);
     }
-    response.status(400).send('Something went wrong registering the user...');
-}); 
+  } catch (error) {
+    console.error(error);
+  }
+  response.status(400).send("Something went wrong registering the user...");
+});
 
 // router.get('/logout', (request, response) => {
 //     request.logout((error) => {
@@ -68,16 +85,11 @@ router.post('/register', async (request, response) => {
 // });
 
 function isAuthenticated(request, response, next) {
-    // passport puts an isAuthenticated() method on the request object
-    // - we can use this to check if a user is logged in or not
-    if (request.isAuthenticated()) return next();
-    response.redirect("/login");
-    // return response.status(400).send('Not logged in.');
+  // passport puts an isAuthenticated() method on the request object
+  // - we can use this to check if a user is logged in or not
+  if (request.isAuthenticated()) return next();
+  response.redirect("/login");
+  // return response.status(400).send('Not logged in.');
 }
-
-
-
-
-
 
 module.exports = router;
