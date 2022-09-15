@@ -52,23 +52,23 @@ router.post('/register', async (request, response) => {
     response.status(400).send('Something went wrong registering the user...');
 }); 
 
-// router.get('/logout', (request, response) => {
-//     request.logout((error) => {
-//         if (error) return next(error);
-//         response.cookie('connect.sid', "", {
-//             httpOnly: true,
-//             path: '/',
-//             domain: 'localhost',
-//             expires: new Date(1)
-//         });
-//         response.redirect('/login');
-//     });
-// })
+router.get('/logout', (request, response) => {
+    request.logout((error) => {
+        if (error) return next(error);
+        response.cookie('connect.sid', "", {
+            httpOnly: true,
+            path: '/',
+            domain: 'localhost',
+            expires: new Date(1)
+        });
+        response.redirect('/login');
+    });
+})
 
-// router.get('/protected', isAuthenticated, (request, response) => {
-//     // if you are authenticated, remember that you can get the user from request.user
-//     return response.status(200).send("Hit route only members can see.");
-// });
+router.get('/protected', isAuthenticated, (request, response) => {
+    // if you are authenticated, remember that you can get the user from request.user
+    return response.status(200).send("Hit route only members can see.");
+});
 
 function isAuthenticated(request, response, next) {
     // passport puts an isAuthenticated() method on the request object
