@@ -18,10 +18,9 @@ app.use(expressSession({
     resave: false,
     saveUninitialized: false, // only want sessions upon logging in
     cookie: {
-        maxAge: 1 * 60 * 1000 * 1 // 1 minute cookie
+        maxAge: 1 * 60 * 1000 // 1 hour cookie
     }
 }));
-
 
 
 // Passport configuration (authentication)
@@ -48,19 +47,18 @@ passport.use(new LocalStrategy(User.authenticate())); // User.authenticate() com
 
 app.use(express.static("public"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 
 //the following was set to allow cookies to be sent to port 3001 despite it not being origin
 app.use(cors({
-    origin: 'http://localhost:3001',
+    origin : 'http://localhost:3001' ,
     credentials: true, // <= Accept credentials (cookies) sent by the client
-}))
+  }))
+  
+  app.use("/", userRouter);
 
-app.use("/", userRouter);
-
-app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
+  app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Credentials', true);
     res.header(
         'Access-Control-Allow-Headers',
@@ -71,6 +69,7 @@ app.use(function (req, res, next) {
 
 
 
+app.use(express.urlencoded({ extended: true }));
 
 
 
@@ -81,91 +80,14 @@ app.use(function (req, res, next) {
  * 
  * */
 app.use("/Posts", PostRouter);
-app.use("/", BookingRouter);
+app.use("/",BookingRouter); 
 app.use("/", MovieRouter);
-app.use("/", userRouter);
-
 
 // initialise passport and indicate it should use sessions for logins
 app.use(passport.initialize());
 app.use(passport.session());
-// app.use(cors());
-
-app.get('/login', (request, response) => {
-    response.sendFile(path.join(__dirname + '/../' + 'public/login.html'));
-});
-
-app.get('/users', async (request, response) => {
-    const user = await User.find();
-    response.send(user);
-})
-
-app.get('/register', (request, response) => {
-    response.sendFile(path.join(__dirname + '/../' + 'public/register.html'));
-});
-
-
-
-app.post('/login', passport.authenticate('local', {
-    failureMessage: 'Invalid login credentials.',
-    failureRedirect: '/'
-}), (request, response) => {
-    // upon successful login, passport will automatically create an express session for us to use
-    response.status(200).send(request.user.username);
-});
-
-app.post('/register', async (request, response) => {
-    try {
-        // register the user
-        const user = await User.register(new User({
-            username: request.body.username,
-            dateOfBirth: request.body.dateOfBirth,
-            email: request.body.email,
-            isAdmin: request.body.isAdmin
-        }), request.body.password); // register(userWithUsername, password)
-
-        if (user) {
-            passport.authenticate("local");
-            // await User.findOneAndUpdate({'username': 'rossmorr8'}, {$set: {'age':"test2"}});
-            return response.status(200).send(user);
-        }
-    } catch (error) {
-        console.error(error);
-    }
-    response.status(400).send('Something went wrong registering the user...');
-});
-
-app.get('/logout', (request, response, next) => {
-
-    console.log(request);
-    request.logout((error) => {
-        if (error) return next(error);
-        response.cookie('connect.sid', "null", {
-            httpOnly: true,
-            expires: new Date('Thu, 01 Jan 1970 00:00:00 UTC')
-        });
-        request.session.destroy((error)=>{
-            if (error) return next(error);
-            response.redirect('/login');
-        })
-
-    });
-})
-
-app.get('/protected', checkAuthentication, (request, response) => {
-    // if you are authenticated, remember that you can get the user from request.user
-    return response.status(200).send("Hit route only members can see.");
-});
-
-function checkAuthentication(request, response, next) {
-    // passport puts an isAuthenticated() method on the request object
-    // - we can use this to check if a user is logged in or not
-    if (request.isAuthenticated()) {
-        return next();
-    }
-    // return response.status(400).send('Not logged in.');
-}
-
+app.use(cors());
+app.use("/", userRouter);
 
 
 
@@ -177,7 +99,5 @@ async function main() {
         console.error(error);
     }
 }
-
-
 
 main();
