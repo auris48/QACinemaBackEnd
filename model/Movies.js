@@ -59,7 +59,7 @@ const movieSchema = new Schema({
     },
 
     dayShowing: {
-        type: Date,
+        type: [Date],
     }    
 
 });
