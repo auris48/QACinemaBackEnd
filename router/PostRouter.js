@@ -37,7 +37,7 @@ router.put("/:id", async (req, res) => {
   const postUpdated = await Post.updateOne({ _id: req.params.id }, req.body);
   if (postUpdated) {
     const updatedPost = await Post.findById({ _id: req.params.id });
-    console.log(updatedPost); 
+    console.log(updatedPost);
     res.status(200).send(updatedPost);
   } else {
     res.status(404).send("Post not found");
@@ -78,7 +78,6 @@ router.post("/Add_Comment_Reply/:id", async (req, res) => {
 });
 
 router.put("/Edit_Reply/:id", async (req, res) => {
-
   console.log(req.body);
 
   try {
@@ -113,11 +112,11 @@ router.get("/num_pages/:page_size", async (req, res) => {
   }
 });
 
-router.get("pages/", async (req, res) => {
+router.get("/page/p?", async (req, res) => {
   try {
     const posts = await Post.find()
-      .skip(req.params.page_num * req.params.limit)
-      .limit(req.params.limit);
+      .skip(req.query.page * req.query.limit)
+      .limit(req.query.limit);
     res.status(200).json(posts);
   } catch (err) {
     res.status(500).send(err);
