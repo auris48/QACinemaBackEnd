@@ -8,6 +8,7 @@ const Booking = require('../model/Booking');
 
 
 router.post('/booking', async (req, res) => {
+
     try {
         const booking = new Booking(req.body);
         await booking.save();

@@ -65,8 +65,17 @@ const movieSchema = new Schema({
 
     dayShowing: {
         type: [Date],
-    }    
+    },
 
+    featured: {
+        type: Boolean,
+        required: false,
+    },
+
+    sliderImageURL: {
+        type: String,
+        required: false
+    },
 });
 
 module.exports = mongoose.model("Movies", movieSchema);

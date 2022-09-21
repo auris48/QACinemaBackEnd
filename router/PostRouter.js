@@ -96,6 +96,7 @@ router.put("/Edit_Reply/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   const post = await Post.deleteOne({ _id: req.params.id });
+
   if (post) {
     res.status(200).send();
   } else {
@@ -116,7 +117,8 @@ router.get("/page/p?", async (req, res) => {
   try {
     const posts = await Post.find()
       .skip(req.query.page * req.query.limit)
-      .limit(req.query.limit);
+      .limit(req.query.limit)
+      .sort({ dateCreated: -1 });
     res.status(200).json(posts);
   } catch (err) {
     res.status(500).send(err);
