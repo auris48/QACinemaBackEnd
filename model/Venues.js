@@ -30,11 +30,6 @@ const venueSchema = new Schema({
         type: String,
         required: true,
     },
-
-    numberOfScreens: {
-        type: Integer,
-        required: true,
-    },
     
 
 
