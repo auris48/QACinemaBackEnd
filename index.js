@@ -9,6 +9,7 @@ const PostRouter = require('./router/PostRouter');
 const BookingRouter = require('./router/BookingRouter')
 const MovieRouter = require('./router/MovieRouter')
 const userRouter = require('./router/userRouter');
+const VenuesRouter = require('./router/VenuesRouter');
 const app = express();
 const cors = require("cors");
 
@@ -84,6 +85,7 @@ app.use("/Posts", PostRouter);
 app.use("/", BookingRouter);
 app.use("/", MovieRouter);
 app.use("/", userRouter);
+app.use("/", VenuesRouter);
 
 
 // initialise passport and indicate it should use sessions for logins
