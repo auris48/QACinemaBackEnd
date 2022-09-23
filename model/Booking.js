@@ -1,55 +1,60 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
 const bookingSchema = new Schema({
-    userID:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required:false
+  userID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: false,
+  },
+  movieID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Movies",
+    required: false,
+  },
+  year: {
+    type: Number,
+    required: true,
+  },
+  month: {
+    type: Number,
+    required: true,
+  },
+  day: {
+    type: Number,
+    required: true,
+  },
+  time: {
+    type: String,
+    required: true,
+  },
+  noOfTickets: {
+    noOfAdult: {
+      type: Number,
+      required: true,
+      default: 0,
     },
-    movieID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Movies",
-        required: false
+    noOfChild: {
+      type: Number,
+      required: true,
+      default: 0,
     },
-    year: {
-        type: Number,
-        required: true
+    noOfConcession: {
+      type: Number,
+      required: true,
+      default: 0,
     },
-    month: {
-        type: Number,
-        required: true
-    },
-    day: {
-        type: Number,
-        required: true
-    },
-    time: {
-        type: String,
-        required: true
-    },
-    noOfTickets: {
-        noOfAdult: {
-            type: Number,
-            required: true,
-            default: 0
-        },
-        noOfChild: {
-            type: Number,
-            required: true,
-            default: 0
-        },
-        noOfConcession: {
-            type: Number,
-            required: true,
-            default: 0
-        }   
+  },
 
-    },
-    paymentID: {
-        type: String
-    }
+  isPaid: {
+    type: Boolean,
+    default: false,
+  },
+
+  paymentID: {
+    type: String, 
+  },
 });
 
 module.exports = mongoose.model("Bookings", bookingSchema);
