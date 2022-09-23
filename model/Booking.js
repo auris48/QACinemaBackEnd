@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const bookingSchema = new Schema({
+
   userID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -34,6 +35,7 @@ const bookingSchema = new Schema({
       type: Number,
       required: true,
       default: 0,
+
     },
     noOfChild: {
       type: Number,
