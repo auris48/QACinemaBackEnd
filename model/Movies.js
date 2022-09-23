@@ -5,52 +5,57 @@ const Schema = mongoose.Schema;
 const movieSchema = new Schema({
     title: {
         type: String,
-        required: true,
+        required: false,
         minlength: 2
     },
     
     genre: {
         type: String,
-        required: true
+        required:false 
     },
 
     imageURL: {
         type: String,
-        required: true
+        required: false
+    },
+
+    trailerURL: {
+        type: String,
+        required: false
     },
 
     description: {
         type: String,
-        required: true
+        required: false
     },
 
     classification: {
         type: String,
-        required: true
+        required: false
     },
 
     releaseDate: {
         type: Date,
-        required: true,
-        minlength: 4
+        required: false,
+        minLength: 4
 
     },
     runTime: {
         type: String,
-        required: true
+        required: false
     },
    
     actors: {
        type: String,
-        required: true,
-        minlength: 2
+        required: false,
+        minLength: 2
       
     },
 
     director: {
         type: String,
-        required: true,
-        minlength: 2
+        required: false,
+        minLength: 2
     },
 
     released: { 
@@ -59,9 +64,18 @@ const movieSchema = new Schema({
     },
 
     dayShowing: {
-        type: Date,
-    }    
+        type: [Date],
+    },
 
+    featured: {
+        type: Boolean,
+        required: false,
+    },
+
+    sliderImageURL: {
+        type: String,
+        required: false
+    },
 });
 
 module.exports = mongoose.model("Movies", movieSchema);

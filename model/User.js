@@ -23,10 +23,16 @@ const userSchema = new mongoose.Schema({
             validator: validator.isEmail,
             message: '{VALUE} is not a valid email',
             isAsync: false
+        }
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false
     }
-}});
 
-// Adds a hash and salt field, and uses these to encrypt the password
+});
+
+// Adds a hash and field, and uses these to encrypt the password
 // - also adds some helper methods for validating users
 userSchema.plugin(passportLocalMongoose);
 
