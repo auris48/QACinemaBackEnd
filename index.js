@@ -10,12 +10,13 @@ const PostRouter = require("./router/PostRouter");
 const BookingRouter = require("./router/BookingRouter");
 const MovieRouter = require("./router/MovieRouter");
 const userRouter = require("./router/userRouter");
-const VenuesRouter = require('./router/VenuesRouter');
+const VenuesRouter = require("./router/VenuesRouter");
 const app = express();
 const cors = require("cors");
 const stripe = require("stripe")(
   "sk_test_51LiavOHjxDELH0GArij6h5cpGnj88Q2vr5QDTSHBEO0UvLzhD8aBM088y2lU0GCbv6zat3PiG9GnMAYjF0MguPSM00AZ92EJQX"
 );
+
 
 app.use(
   expressSession({
@@ -63,7 +64,7 @@ app.use(
 );
 
 app.use("/", userRouter);
-
+app.use("/", VenuesRouter);
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "http://localhost:3001");
   res.header("Access-Control-Allow-Credentials", true);
@@ -83,7 +84,6 @@ app.use("/Posts", PostRouter);
 app.use("/", BookingRouter);
 app.use("/", MovieRouter);
 app.use("/", userRouter);
-app.use("/", VenuesRouter);
 
 // initialise passport and indicate it should use sessions for logins
 app.use(passport.initialize());
@@ -98,13 +98,12 @@ app.post("/create-checkout-session", async (req, res) => {
     booking.noOfTickets.noOfConcession * 800;
   /*  console.log(req.body);
   console.log(booking); */
-  console.log("hi");
+  console.log(booking);
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
 
     line_items: [
       {
-        billing_address_collection: "auto",
         price_data: {
           currency: "gbp",
           product_data: {
@@ -117,9 +116,10 @@ app.post("/create-checkout-session", async (req, res) => {
       },
     ],
     mode: "payment",
-    success_url: "http://localhost:3001/paymentsuccess",
-    cancel_url: "http://localhost:3001/paymentcancel",
+    success_url: `http://localhost:3001/success/${booking._id}/{CHECKOUT_SESSION_ID}`,
+    cancel_url: "http://localhost:3001/cancel",
   });
+
   /*   res.json({ id: session.id }); */
   res.status(200).send(session);
 });
